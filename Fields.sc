@@ -17,14 +17,14 @@ ScalarField {
 	value{ |vector,t| ^func.(vector,t) }
 	
 	prGradElem{ |i,vector,t,delta=0.01|
-		var deltaV = Vector.canonB(i,vector.size)*delta;
+		var deltaV = RealVector.canonB(i,vector.size)*delta;
 		^this.value(vector+deltaV,t)-this.value(vector-deltaV,t)
 	}
 	
 	grad{ |vector,t=0,delta = 0.01|
 		^vector.size.collect{ |i| 
 			this.prGradElem(i,vector,t,delta)
-			}.as(Vector)
+			}.as(RealVector)
 	}
 	
 	surf3{ |t=0,rect,grid = 20,hidden3d = true, pm3d = true,extracmds|
@@ -37,7 +37,7 @@ ScalarField {
 		gnuplot = GNUPlot.new;
 		grain = 1/grid;  
 		xyz =  (0,grain .. 1).collect{|x|  (0,grain .. 1).collect{|y| 
-			 [specX.map(x),specY.map(y),this.value(Vector2D[specX.map(x),specY.map(y)],t)]
+			 [specX.map(x),specY.map(y),this.value(RealVector2D[specX.map(x),specY.map(y)],t)]
 		 } };
 		gnuplot.surf3(xyz, "a Scalar Field", hidden3d, pm3d,extracmds:extracmds);
 	}
@@ -88,7 +88,7 @@ ScalarField {
 		
 		valArray = Array.fill(hsize*vsize, { |i|
 			var x = i%hsize, y = i.div(hsize);
-			this.func.(Vector2D[xmap.(x),ymap.(y)],t).abs;
+			this.func.(RealVector2D[xmap.(x),ymap.(y)],t).abs;
 		});
 		
 		min = valArray.minItem;
@@ -149,7 +149,7 @@ ScalarField {
 		
 		valArray = Array.fill(hsize*vsize, { |i|
 			var x = i%hsize, y = i.div(hsize);
-			this.func.(Vector2D[xmap.(x),ymap.(y)],t).abs;
+			this.func.(RealVector2D[xmap.(x),ymap.(y)],t).abs;
 		});
 		
 		min = valArray.minItem;
@@ -192,7 +192,7 @@ ScalarField {
 		var spec = [0,n-1].asSpec;
 		^n.collect{ |i|
 			n.collect{ |j|
-				func.value(Vector2D[spec.unmap(i),spec.unmap(j)])
+				func.value(RealVector2D[spec.unmap(i),spec.unmap(j)])
 			}
 		}.flat			
 	
@@ -219,7 +219,7 @@ ScalarField {
 		rect = rect ?? { Rect(0.0,0.0,1.0,1.0) };
 		//this.checkD(2);
 		spec = [0,n-1,\linear].asSpec;
-		values = Array2D.new2D(n+1,n+1,{ |i,j|  this.value(Vector2D[spec.unmap(i),spec.unmap(j)],0) });
+		values = Array2D.new2D(n+1,n+1,{ |i,j|  this.value(RealVector2D[spec.unmap(i),spec.unmap(j)],0) });
 		
 		^ScalarField({ |vector|
 			var grain, indexX,indexY,xdiv,ydiv,points,xmod,ymod,xmodbool,ymodbool,normal,x,y;
@@ -233,17 +233,17 @@ ScalarField {
 			ydiv = y.div(grain)*grain;
 			
 			points = if(ymod>xmod){
-				[Vector3D[xdiv,ydiv,values.at(indexX,indexY)],
-				Vector3D[xdiv,ydiv+grain,values.at(indexX,indexY+1)],
-				Vector3D[xdiv+grain,ydiv+grain,values.at(indexX+1,indexY+1)]]
+				[RealVector3D[xdiv,ydiv,values.at(indexX,indexY)],
+				RealVector3D[xdiv,ydiv+grain,values.at(indexX,indexY+1)],
+				RealVector3D[xdiv+grain,ydiv+grain,values.at(indexX+1,indexY+1)]]
 			}{
-				[Vector3D[xdiv,ydiv,values.at(indexX,indexY)],
-				Vector3D[xdiv+grain,ydiv+grain,values.at(indexX+1,indexY+1)],
-				Vector3D[xdiv+grain,ydiv,values.at(indexX+1,indexY)]]
+				[RealVector3D[xdiv,ydiv,values.at(indexX,indexY)],
+				RealVector3D[xdiv+grain,ydiv+grain,values.at(indexX+1,indexY+1)],
+				RealVector3D[xdiv+grain,ydiv,values.at(indexX+1,indexY)]]
 			};
 			normal = (points[1]-points[0]).cross(points[2]-points[0]);
 			
-			(normal<|>(points[0]-Vector3D[x,y,0]))/normal.z
+			(normal<|>(points[0]-RealVector3D[x,y,0]))/normal.z
 		
 	},2)		
 	
@@ -267,7 +267,7 @@ BlobField : ScalarField{
 		var blob,range,func;
 		
 		fieldDesc = fieldDesc ?? 
-			{ 3.collect{ [Vector.rand(2),rrand(0.4,1.0),rrand(0.2,0.4)] } };
+			{ 3.collect{ [RealVector.rand(2),rrand(0.4,1.0),rrand(0.2,0.4)] } };
 		
 		blob = { |x0,y0,sigma=0.2| var e = 2.71828;
 			{ |x,y| e**((((x-x0)**2) + ((y-y0)**2))/(2*(sigma**2))).neg }
@@ -305,7 +305,7 @@ BlobField : ScalarField{
 	}
 	
 	prGradElemUnmapped{ |i,vector,t,delta=0.01|
-		var deltaV = Vector.canonB(i,vector.size)*delta;
+		var deltaV = RealVector.canonB(i,vector.size)*delta;
 		^this.valueUnmapped(vector+deltaV,t)-this.valueUnmapped(vector-deltaV,t)	
 	}
 	
@@ -348,7 +348,7 @@ VectField[slot] : RawArray{
 	}
 	
 	value { arg... args;
-		^this.collect{ |func| func.(*args) }.as(Vector)
+		^this.collect{ |func| func.(*args) }.as(RealVector)
 	}
 		
 	asFunc{
