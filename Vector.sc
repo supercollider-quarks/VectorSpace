@@ -185,9 +185,7 @@ RealVector2D[slot] : RealVector {
 		^(this[0] * vec[0]) + (this[1] * vec[1])
 	}
 	
-	asRealVector2D {
-		^this
-	}
+	asRealVector2D { ^this }
 	
 }
 
@@ -205,15 +203,35 @@ RealVector3D[slot] : RealVector {
 	<|> { |vec| 
 		^(this[0] * vec[0]) + (this[1] * vec[1]) + (this[2] * vec[2])
 	}
+
+	rotate { arg angle; // XY-plane, in radians
+		var sinr, cosr;
+		sinr = angle.sin;
+		cosr = angle.cos;
+		^RealVector3D[(this[0] * cosr) - (this[1] * sinr), (this[0] * sinr) + (this[1] * cosr), this[2]]
+	}
+
+	phi { ^atan2(this[2], (this[0].squared + this[1].squared).sqrt) }
+
+	asRealVector3D{ ^this }
+
 }
 
 + Point {	
 	
 	asRealVector {
-		^RealVector[this.x, this.y]
+		^RealVector[x, y]
 	}
 	
 	asRealVector2D {
-		^RealVector2D[this.x, this.y]
+		^RealVector2D[x, y]
 	}
+}
+
++ SimpleNumber {
+
+    asRealVector3D{
+        ^3.collect{ this }.as(RealVector3D)
+    }
+
 }
