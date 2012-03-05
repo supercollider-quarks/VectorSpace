@@ -73,7 +73,7 @@ RealVector[7,2,3].normalize.norm
 ComplexVector[Complex(1,0),Complex(1,2)].normalize.norm
 ::
 
-METHOD:: isOrthogonal (vector)
+METHOD:: isOrthogonal
 
 code::
 RealVector[0,0,1,0].isOrthogonal(RealVector[1,0,0,0])
@@ -87,7 +87,7 @@ code::
 RealVector[0,0,1,0].transpose
 ::
 
-METHOD::proj (vector)
+METHOD::proj
 projects vector into the current vector.
 
 code::

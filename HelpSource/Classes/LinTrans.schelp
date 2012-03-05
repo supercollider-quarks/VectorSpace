@@ -74,6 +74,7 @@ LinTrans(Matrix.with([[1,2],[2,3]])).det
 METHOD:: inverse
 inverse transformation.
 
+code::
 a = LinTrans(Matrix.with([[1,2],[2,3]]));
 b = a.inverse;
 (a*b).value(RealVector[1,2]) //a*b is identity
