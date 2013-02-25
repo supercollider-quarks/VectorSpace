@@ -50,7 +50,7 @@ AbstractVector[slot] : ArrayedCollection {
 	}
 
 	asRealVector2D {
-		^FloatVector2D[this.x, this.y]
+		^RealVector2D[this.x, this.y]
 	}
 	
 	angle{ |vector|
