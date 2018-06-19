@@ -31,6 +31,16 @@ code::
 RealVector.canonB(0,6)
 ::
 
+METHOD:: zero
+A zero vector.
+
+ARGUMENT:: size
+dimension of vector.
+
+code::
+RealVector.zero(3);
+::
+
 INSTANCEMETHODS::
 
 METHOD::cross
