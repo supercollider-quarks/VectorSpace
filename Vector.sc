@@ -35,6 +35,12 @@ AbstractVector[slot] : ArrayedCollection {
 		if(this.norm > max, { ^this.normalize * max })
 	}
 
+  clip {|min, max|
+    this.do{|val, i|
+      this[i] = this[i].clip(min,max);
+    };
+  }
+
 	isOrthogonal { |vector|
 		^(this <|> vector) == 0
 	}
@@ -82,6 +88,10 @@ AbstractVector[slot] : ArrayedCollection {
 		}
 	}
 
+  isVector {
+    ^true;
+  }
+
 }
 
 // for vectors in R^N
@@ -101,10 +111,10 @@ RealVector[slot] : AbstractVector {
 		^this.newFrom([rrand(xlo, xhi), rrand(ylo, yhi)])
 	}
 
-  // a zero vector
-  *zero { |size|
-    ^this.newFrom(Array.fill(size, {0}))
-  }
+	// a zero vector
+	*zero { |size|
+		^this.newFrom(Array.fill(size, {0}))
+	}
 
 	//inner product
 	<|> { |vec|
