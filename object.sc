@@ -1,0 +1,6 @@
++ Object {
+
+  isVector {
+    ^false;
+  }
+}
