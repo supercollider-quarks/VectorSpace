@@ -200,6 +200,15 @@ RealVector2D[slot] : RealVector {
 		^(this[0] * vec[0]) + (this[1] * vec[1])
 	}
 
+	rotate {|angle|
+		var x, y;
+		x = (cos(angle)*this[0]) - (sin(angle)*this[1]);
+		y = (sin(angle)*this[0]) + (cos(angle)*this[1]);
+		this[0] = x;
+		this[1] = y;
+		^this;
+	}
+
 	asRealVector2D { ^this }
 
 }
