@@ -188,6 +188,10 @@ ComplexVector[slot] : AbstractVector {
 //--2d vector optimised for speed, around 10% faster.
 RealVector2D[slot] : RealVector {
 
+	*zero {
+		^this.newFrom([0,0]);
+	}
+	
 	norm {
 		^this[0].sumsqr(this[1]).sqrt
 	}
@@ -210,6 +214,7 @@ RealVector2D[slot] : RealVector {
 	}
 
 	asRealVector2D { ^this }
+
 
 }
 
