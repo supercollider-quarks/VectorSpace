@@ -59,6 +59,10 @@ AbstractVector[slot] : ArrayedCollection {
 		^RealVector2D[this.x, this.y]
 	}
 
+	asRealVector3D {
+		^RealVector3D[this.x, this.y, this.z]
+	}
+
 	angle{ |vector|
 		^acos((this<|>vector)/(this.norm*vector.norm))
 	}
@@ -191,7 +195,7 @@ RealVector2D[slot] : RealVector {
 	*zero {
 		^this.newFrom([0,0]);
 	}
-	
+
 	norm {
 		^this[0].sumsqr(this[1]).sqrt
 	}
@@ -220,6 +224,10 @@ RealVector2D[slot] : RealVector {
 
 //--3d vector optimised for speed, around 10% faster.
 RealVector3D[slot] : RealVector {
+
+	*zero {
+		^this.newFrom([0,0,0]);
+	}
 
 	norm {
 		^(this[0].sumsqr(this[1]) + this[2].pow(2)).sqrt
