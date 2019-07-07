@@ -1,4 +1,4 @@
-// �2009 Miguel Negr�o
+// 2009 Miguel Negro
 // GPLv3 - http://www.gnu.org/licenses/gpl-3.0.html
 
 //func of type { |vector,t|  a scalar value }
@@ -82,8 +82,8 @@ ScalarField {
 		image = SCImage.new(hsize,vsize);
 		//image.accelerated_(true);
 
-		xmap = { |x| x.linlin(0,hsize-1,rect.left,rect.left + rect.width)�};
-		ymap = { |y| y.linlin(0,vsize-1,rect.top + rect.height,rect.top )�};
+		xmap = { |x| x.linlin(0,hsize-1,rect.left,rect.left + rect.width)};
+		ymap = { |y| y.linlin(0,vsize-1,rect.top + rect.height,rect.top )};
 
 
 		valArray = Array.fill(hsize*vsize, { |i|
@@ -143,8 +143,8 @@ ScalarField {
 		image = SCImage.new(hsize,vsize);
 		//image.accelerated_(true);
 
-		xmap = { |x| x.linlin(0,hsize-1,rect.left,rect.left + rect.width)�};
-		ymap = { |x| x.linlin(0,vsize-1,rect.top + rect.height,rect.top)�};
+		xmap = { |x| x.linlin(0,hsize-1,rect.left,rect.left + rect.width)};
+		ymap = { |x| x.linlin(0,vsize-1,rect.top + rect.height,rect.top)};
 
 
 		valArray = Array.fill(hsize*vsize, { |i|

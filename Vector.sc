@@ -1,4 +1,4 @@
-// �2009 Miguel Negr�o, Fredrik Olofsson
+// 2009 Miguel Negro, Fredrik Olofsson
 // GPLv3 - http://www.gnu.org/licenses/gpl-3.0.html
 
 //Vector class for vectors of any dimension, with optimized classes for 2D and 3D.
@@ -249,6 +249,10 @@ RealVector3D[slot] : RealVector {
 	}
 
 	phi { ^atan2(this[2], (this[0].squared + this[1].squared).sqrt) }
+
+	azi {
+		^atan2(this[0], this[2])
+	}
 
 	asRealVector3D{ ^this }
 
