@@ -35,6 +35,12 @@ AbstractVector[slot] : ArrayedCollection {
 		if(this.norm > max, { ^this.normalize * max })
 	}
 
+	clip {|min, max|
+		this.do{|val, i|
+			this[i] = this[i].clip(min,max);
+		};
+	}
+
 	isOrthogonal { |vector|
 		^(this <|> vector) == 0
 	}
@@ -51,6 +57,10 @@ AbstractVector[slot] : ArrayedCollection {
 
 	asRealVector2D {
 		^RealVector2D[this.x, this.y]
+	}
+
+	asRealVector3D {
+		^RealVector3D[this.x, this.y, this.z]
 	}
 
 	angle{ |vector|
@@ -82,6 +92,10 @@ AbstractVector[slot] : ArrayedCollection {
 		}
 	}
 
+	isVector {
+		^true;
+	}
+
 }
 
 // for vectors in R^N
@@ -99,6 +113,11 @@ RealVector[slot] : AbstractVector {
 
 	*rand2D { |xlo, xhi, ylo, yhi|
 		^this.newFrom([rrand(xlo, xhi), rrand(ylo, yhi)])
+	}
+
+	// a zero vector
+	*zero { |size|
+		^this.newFrom(Array.fill(size, {0}))
 	}
 
 	//inner product
@@ -173,6 +192,10 @@ ComplexVector[slot] : AbstractVector {
 //--2d vector optimised for speed, around 10% faster.
 RealVector2D[slot] : RealVector {
 
+	*zero {
+		^this.newFrom([0,0]);
+	}
+
 	norm {
 		^this[0].sumsqr(this[1]).sqrt
 	}
@@ -185,12 +208,23 @@ RealVector2D[slot] : RealVector {
 		^(this[0] * vec[0]) + (this[1] * vec[1])
 	}
 
+	rotate {|angle|
+		var x, y;
+		x = (cos(angle)*this[0]) - (sin(angle)*this[1]);
+		y = (sin(angle)*this[0]) + (cos(angle)*this[1]);
+		^RealVector2D[x,y];
+	}
+
 	asRealVector2D { ^this }
 
 }
 
 //--3d vector optimised for speed, around 10% faster.
 RealVector3D[slot] : RealVector {
+
+	*zero {
+		^this.newFrom([0,0,0]);
+	}
 
 	norm {
 		^(this[0].sumsqr(this[1]) + this[2].pow(2)).sqrt
@@ -212,6 +246,10 @@ RealVector3D[slot] : RealVector {
 	}
 
 	phi { ^atan2(this[2], (this[0].squared + this[1].squared).sqrt) }
+
+	azi {
+		^atan2(this[1], this[0])
+	}
 
 	asRealVector3D{ ^this }
 
