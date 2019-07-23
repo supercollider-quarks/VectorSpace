@@ -92,10 +92,6 @@ AbstractVector[slot] : ArrayedCollection {
 		}
 	}
 
-	isVector {
-		^true;
-	}
-
 }
 
 // for vectors in R^N
