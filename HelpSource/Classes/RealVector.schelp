@@ -59,3 +59,13 @@ METHOD:: theta
 code::
 RealVector[0,1].theta/(2pi)*360
 ::
+
+METHOD:: zero
+Make a zero vector
+
+ARGUMENT:: dim
+Dimensions of the vector. This is not needed for code::RealVector2D.zero:: or code::RealVector3D.zero::.
+
+code::
+RealVector.zero(5); // a five-dimensional zero vector
+::

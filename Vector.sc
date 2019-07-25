@@ -1,50 +1,56 @@
-// ©2009 Miguel Negrão, Fredrik Olofsson
+// Copyright 2009 Miguel Negr√£o, Fredrik Olofsson
 // GPLv3 - http://www.gnu.org/licenses/gpl-3.0.html
 
 //Vector class for vectors of any dimension, with optimized classes for 2D and 3D.
 
 AbstractVector[slot] : ArrayedCollection {
-	
+
 	species { ^this.class }
-	
+
 	//usual notation up to 3D vectors
 	x { ^this.at(0) }
-	
+
 	y { ^this.at(1) }
-	
-	z { ^this.at(2) }	
-	
+
+	z { ^this.at(2) }
+
 	//inner product
-	<|> { |vec| 
-		^this.subclassResponsibility 
+	<|> { |vec|
+		^this.subclassResponsibility
 	}
-	
+
 	norm {
 		^(this <|> this).sqrt
 	}
-	
+
 	dist { |vec|
 		^(this - vec).norm
 	}
-	
+
 	normalize {
 		^this / this.norm
 	}
-	
+
 	limit { |max|
 		if(this.norm > max, { ^this.normalize * max })
 	}
-	
+
+	clip {|min, max|
+		this.do{|val, i|
+			this[i] = this[i].clip(min,max);
+		};
+	}
+
 	isOrthogonal { |vector|
 		^(this <|> vector) == 0
 	}
-	
+
 	asAbstractVector { ^this }
-	
+
 	asPoint {
 		^Point(this[0],this[1])
 	}
-	
+
 	asRealVector {
 		^RealVector[this.x, this.y]
 	}
@@ -52,26 +58,30 @@ AbstractVector[slot] : ArrayedCollection {
 	asRealVector2D {
 		^RealVector2D[this.x, this.y]
 	}
-	
+
+	asRealVector3D {
+		^RealVector3D[this.x, this.y, this.z]
+	}
+
 	angle{ |vector|
 		^acos((this<|>vector)/(this.norm*vector.norm))
 	}
-	
+
 	transpose{
 		^this.asMatrix.flop
 	}
-	
+
 	asMatrix{
-		^Matrix.with(this.collect{ |a| [a] })		
+		^Matrix.with(this.collect{ |a| [a] })
 	}
-	
+
 	//project a vector onto this vector
 	proj{ |vector|
 		^this*(this<|>vector)/(this<|>this)
 	}
-	
+
 	*gramSchmidt{ |vectors|
-		
+
 		^vectors.collect{ |vector1,j|
 			vectors.do{ |vector2,k|
 				if(j<k){
@@ -79,14 +89,14 @@ AbstractVector[slot] : ArrayedCollection {
 				}
 			};
 			vector1.normalize;
-		}		
+		}
 	}
-		
+
 }
 
 // for vectors in R^N
 RealVector[slot] : AbstractVector {
-	
+
 	species {^this.class}
 
 	*canonB { |i,size|
@@ -96,15 +106,20 @@ RealVector[slot] : AbstractVector {
 	*rand { |size = 2, lo = 0.0, hi = 1.0|
 		^this.newFrom(size.collect { rrand(lo, hi) })
 	}
-		
+
 	*rand2D { |xlo, xhi, ylo, yhi|
 		^this.newFrom([rrand(xlo, xhi), rrand(ylo, yhi)])
-	}	
-	
+	}
+
+	// a zero vector
+	*zero { |size|
+		^this.newFrom(Array.fill(size, {0}))
+	}
+
 	//inner product
-	<|> { |vec|	
+	<|> { |vec|
 		var size = this.size;
-		
+
 		if(size == 2) {
 			^(this[0] * vec[0]) + (this[1] * vec[1])
 		}{
@@ -117,9 +132,9 @@ RealVector[slot] : AbstractVector {
 			}
 		}
 	}
-	
+
 	//outerProduct
-	cross { |vector| 
+	cross { |vector|
 		var a1, a2, a3, b1, b2, b3;
 		#a1, a2, a3 = this;
 		#b1, b2, b3 = vector;
@@ -128,7 +143,7 @@ RealVector[slot] : AbstractVector {
 
 	norm {
 		var size = this.size;
-		
+
 		if(size == 2) {
 			^this[0].sumsqr(this[1]).sqrt
 		}{
@@ -139,10 +154,10 @@ RealVector[slot] : AbstractVector {
 			}
 		}
 	}
-	
+
 	dist { |vec|
 		var size = this.size;
-		
+
 		if(size == 2){
 			^(vec[0]-this[0]).hypot(vec[1]-this[1])
 		}{
@@ -153,16 +168,16 @@ RealVector[slot] : AbstractVector {
 			}
 		}
 	}
-	
-	theta { 
+
+	theta {
 		^atan2(this.at(1), this.at(0))
 	}
-	
+
 }
 
 //vectors in C^N
 ComplexVector[slot] : AbstractVector {
-	
+
 	<|> { |vec|
 		^this.sum { |item, i|
 			item * vec[i].conjugate
@@ -172,35 +187,50 @@ ComplexVector[slot] : AbstractVector {
 
 //--2d vector optimised for speed, around 10% faster.
 RealVector2D[slot] : RealVector {
-	
+
+	*zero {
+		^this.newFrom([0,0]);
+	}
+
 	norm {
 		^this[0].sumsqr(this[1]).sqrt
 	}
-	
-	dist { |vec| 
+
+	dist { |vec|
 		^(vec[0] - this[0]).hypot(vec[1] - this[1])
 	}
-	
-	<|> { |vec| 
+
+	<|> { |vec|
 		^(this[0] * vec[0]) + (this[1] * vec[1])
 	}
-	
+
+	rotate {|angle|
+		var x, y;
+		x = (cos(angle)*this[0]) - (sin(angle)*this[1]);
+		y = (sin(angle)*this[0]) + (cos(angle)*this[1]);
+		^RealVector2D[x,y];
+	}
+
 	asRealVector2D { ^this }
-	
+
 }
 
 //--3d vector optimised for speed, around 10% faster.
 RealVector3D[slot] : RealVector {
-	
+
+	*zero {
+		^this.newFrom([0,0,0]);
+	}
+
 	norm {
 		^(this[0].sumsqr(this[1]) + this[2].pow(2)).sqrt
 	}
-	
-	dist { |vec| 
+
+	dist { |vec|
 		^(vec[0] - this[0]).hypot((vec[1] - this[1]).hypot(vec[2] - this[2]))
 	}
-	
-	<|> { |vec| 
+
+	<|> { |vec|
 		^(this[0] * vec[0]) + (this[1] * vec[1]) + (this[2] * vec[2])
 	}
 
@@ -213,16 +243,20 @@ RealVector3D[slot] : RealVector {
 
 	phi { ^atan2(this[2], (this[0].squared + this[1].squared).sqrt) }
 
+	azi {
+		^atan2(this[1], this[0])
+	}
+
 	asRealVector3D{ ^this }
 
 }
 
-+ Point {	
-	
++ Point {
+
 	asRealVector {
 		^RealVector[x, y]
 	}
-	
+
 	asRealVector2D {
 		^RealVector2D[x, y]
 	}
@@ -230,8 +264,8 @@ RealVector3D[slot] : RealVector {
 
 + SimpleNumber {
 
-    asRealVector3D{
-        ^3.collect{ this }.as(RealVector3D)
-    }
+		asRealVector3D{
+				^3.collect{ this }.as(RealVector3D)
+		}
 
 }

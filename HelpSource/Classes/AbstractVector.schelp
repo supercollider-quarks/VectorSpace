@@ -20,7 +20,7 @@ Applies the gramSchmidt process to the vectors and returns an array of orthogona
 NOTE::
 rounding errors will usually not give you completely orthogonal vectors.
 ::
-	
+
 code::
 a = RealVector[1,2];
 b = RealVector[3,4];
@@ -92,6 +92,19 @@ projects vector into the current vector.
 
 code::
 RealVector[0,0,1].proj(RealVector[3.2,5.6,3.6])
+::
+
+METHOD:: clip
+Clips a vector in all dimensions.
+
+ARGUMENT:: min
+The minimum.
+
+ARGUMENT: max
+The maximum.
+
+code::
+RealVector[10,-4,2].clip(-2,5);
 ::
 
 EXAMPLES::
