@@ -64,7 +64,7 @@ AbstractVector[slot] : ArrayedCollection {
 	}
 
 	angle{ |vector|
-		^acos((this<|>vector)/(this.norm*vector.norm))
+		^acos(((this<|>vector)/(this.norm*vector.norm)).clip(-1,1))
 	}
 
 	transpose{
