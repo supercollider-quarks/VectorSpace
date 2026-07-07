@@ -1,4 +1,4 @@
-// @2009 Miguel Negrão
+// ©2009 Miguel Negrão
 // GPLv3 - http://www.gnu.org/licenses/gpl-3.0.html
 
 //func of type { |vector,t|  a scalar value }	
